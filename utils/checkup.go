@@ -6,8 +6,16 @@ import (
 	"net/http"
 )
 
+// CheckupResults ... Struct which holds a Checkup results
+type CheckupResults struct {
+	Endpoint string
+	Code     int
+	Result   int
+	Pass     bool
+}
+
 // Checkup ... utility function to run one test
-func Checkup(client *http.Client, code int, endpoint string) bool {
+func Checkup(client *http.Client, code int, endpoint string) CheckupResults {
 	request, err := http.NewRequest("GET", endpoint, nil)
 	request.Header.Set("User-Agent", "CheckupCli/1.0")
 	if err != nil {
@@ -18,5 +26,11 @@ func Checkup(client *http.Client, code int, endpoint string) bool {
 		fmt.Printf("error in checkup function: %v", err)
 	}
 	defer resp.Body.Close()
-	return resp.StatusCode == code
+	results := CheckupResults{
+		Endpoint: endpoint,
+		Code:     code,
+		Result:   resp.StatusCode,
+		Pass:     resp.StatusCode == code,
+	}
+	return results
 }

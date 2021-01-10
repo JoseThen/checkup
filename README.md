@@ -1,15 +1,16 @@
 # checkup
-Go Binary to run simple health checks with endpoints
+CLI to run simple health checks against endpoints 
 
 ---
 ## Example Usage :
 
 
 ``` bash
-checkup listen -c 200 google.com
-checkup listen --code 302 potatoe.com/farm
-checkup exam -f list.json potatoe.com
-checkup exam --file list.yml tomatoe.io
+checkup listen -e https://google.com # default code is 200
+checkup listen -c 200 -e https://google.com
+checkup listen --code 302 --endpoint https://potatoe.com/farm
+checkup exam -f list.json
+checkup exam --file list.yml
 ```
 
 ## Exam File Example :
@@ -17,38 +18,41 @@ checkup exam --file list.yml tomatoe.io
 ### Yaml
 ``` yaml
 name: Test Name
-    - code: 200
-      paths:
-        - /farm
-        - /something
-        - /else
-    - code: 404
-      paths:
-        - /this
-        - /not
-        - /found
+endpoint: https://duckduckgo.com
+tests:
+  - code: 200
+    paths:
+      - /farm
+      - /something
+      - /else
+  - code: 404
+    paths:
+      - /this
+      - /not
+      - /found
 ```
 
 ``` json
 {
-    "name": "Exam Name",
-    "test": [
-        {
-            "code": 200,
-            "paths": [
-                "/farm",
-                "/something",
-                "/else",
-            ]
-        },
-        {
-            "code": 404,
-             "paths": [
-                "/this",
-                "/not",
-                "/found",
-            ]
-        }
-    ]
+  "name": "Exam Name",
+  "endpoint": "https://google.com",
+  "tests": [
+    {
+      "code": 200,
+      "paths": [
+          "/farm",
+          "/something",
+          "/else"
+      ]
+    },
+    {
+      "code": 404,
+        "paths": [
+          "/this",
+          "/not",
+          "/found"
+      ]
+    }
+  ]
 }
 ```

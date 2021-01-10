@@ -3,6 +3,8 @@ package cmd
 import (
 	"fmt"
 	"net/http"
+	"os"
+	"text/tabwriter"
 	"time"
 
 	utils "github.com/JoseThen/checkup/utils"
@@ -26,12 +28,17 @@ var listenCmd = &cobra.Command{
 		var httpClient = &http.Client{
 			Timeout: time.Second * 10,
 		}
-		fmt.Printf("listen called with Code: %v and Endpoint: %v\n", code, endpoint)
-		valid := utils.Checkup(httpClient, code, endpoint)
-		if valid {
-			fmt.Println("Good Test")
+		checkup := utils.Checkup(httpClient, code, endpoint)
+		w := tabwriter.NewWriter(os.Stdout, 1, 1, 1, ' ', 0)
+		fmt.Fprintf(w, "\n %s\t%s\t%s\t%s\t", "Endpoint", "Code", "Result", "Pass")
+		fmt.Fprintf(w, "\n %s\t%s\t%s\t%s\t", "--------", "----", "------", "----")
+		fmt.Fprintf(w, "\n %s\t%d\t%d\t%v\t", checkup.Endpoint, checkup.Code, checkup.Result, checkup.Pass)
+		w.Flush()
+		fmt.Println()
+		if checkup.Pass {
+			defer os.Exit(0)
 		} else {
-			fmt.Println("Bad Test")
+			defer os.Exit(1)
 		}
 
 	},
@@ -42,14 +49,4 @@ func init() {
 	listenCmd.Flags().IntVarP(&Code, "code", "c", 200, "Expected status code")
 	listenCmd.Flags().StringVarP(&Endpoint, "endpoint", "e", "", "Endpoint for checkup")
 	listenCmd.MarkFlagRequired("endpoint")
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// listenCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// listenCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

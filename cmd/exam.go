@@ -2,9 +2,17 @@ package cmd
 
 import (
 	"fmt"
+	"net/http"
+	"os"
+	"text/tabwriter"
+	"time"
 
+	utils "github.com/JoseThen/checkup/utils"
 	"github.com/spf13/cobra"
 )
+
+// File ... Variable for File flag
+var File string
 
 // examCmd represents the exam command
 var examCmd = &cobra.Command{
@@ -12,20 +20,32 @@ var examCmd = &cobra.Command{
 	Short: "Run a checkup against a file.",
 	Long:  `Runs checkup against a file`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("exam called")
+		file, _ := cmd.Flags().GetString("file")
+		exitCode := 0
+		exam := utils.ReadExam(file)
+		var httpClient = &http.Client{
+			Timeout: time.Second * 10,
+		}
+		w := tabwriter.NewWriter(os.Stdout, 1, 1, 1, ' ', 0)
+		fmt.Fprintf(w, "\n %s\t%s\t%s\t%s\t", "Endpoint", "Code", "Result", "Pass")
+		fmt.Fprintf(w, "\n %s\t%s\t%s\t%s\t", "--------", "----", "------", "----")
+		for _, test := range exam.Tests {
+			for _, path := range test.Paths {
+				checkup := utils.Checkup(httpClient, test.Code, exam.Endpoint+path)
+				fmt.Fprintf(w, "\n %s\t%d\t%d\t%v\t", checkup.Endpoint, checkup.Code, checkup.Result, checkup.Pass)
+				if checkup.Pass == false {
+					exitCode = 1
+				}
+			}
+		}
+		w.Flush()
+		fmt.Println()
+		defer os.Exit(exitCode)
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(examCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// examCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// examCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	examCmd.Flags().StringVarP(&File, "file", "f", "", "File to run exam against")
+	examCmd.MarkFlagRequired("file")
 }

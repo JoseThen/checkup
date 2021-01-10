@@ -1,0 +1,14 @@
+{
+    "name": "Exam Name",
+    "endpoint": "https://google.com",
+    "tests": [
+        {
+            "code": 200,
+            "paths": [
+                "/farm",
+                "/something",
+                "/else"
+            ]
+        }
+    ]
+}
