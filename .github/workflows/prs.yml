@@ -1,5 +1,7 @@
-name: Build PR
-on: [pull_request]
+name: Test Build
+
+on: push
+
 jobs:
 
   build:
@@ -19,5 +21,11 @@ jobs:
     - name: Build Binary
       run: go build -v .
 
-    - name: Test Binary
-        run ./checkup listen -e https://google.com
+    - name: Test Listen Command
+      run: ./checkup listen -e https://google.com
+
+    - name: Test Exam Command Yaml
+      run: ./checkup exam -f test.yml
+
+    - name: Test Exam Command Json
+      run: ./checkup exam -f test.yml

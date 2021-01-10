@@ -9,14 +9,6 @@
                 "/something",
                 "/else"
             ]
-        },
-        {
-            "code": 404,
-             "paths": [
-                "/this",
-                "/not",
-                "/found"
-            ]
         }
     ]
 }
