@@ -3,6 +3,8 @@ package cmd
 import (
 	"fmt"
 	"net/http"
+	"os"
+	"text/tabwriter"
 	"time"
 
 	utils "github.com/JoseThen/checkup/utils"
@@ -26,12 +28,17 @@ var listenCmd = &cobra.Command{
 		var httpClient = &http.Client{
 			Timeout: time.Second * 10,
 		}
-		fmt.Printf("listen called with Code: %v and Endpoint: %v\n", code, endpoint)
-		valid := utils.Checkup(httpClient, code, endpoint)
-		if valid {
-			fmt.Println("Good Test")
+		checkup := utils.Checkup(httpClient, code, endpoint)
+		w := tabwriter.NewWriter(os.Stdout, 1, 1, 1, ' ', 0)
+		fmt.Fprintf(w, "\n %s\t%s\t%s\t%s\t", "Endpoint", "Code", "Result", "Pass")
+		fmt.Fprintf(w, "\n %s\t%s\t%s\t%s\t", "--------", "----", "------", "----")
+		fmt.Fprintf(w, "\n %s\t%d\t%d\t%v\t", checkup.Endpoint, checkup.Code, checkup.Result, checkup.Pass)
+		w.Flush()
+		fmt.Println()
+		if checkup.Pass {
+			defer os.Exit(0)
 		} else {
-			fmt.Println("Bad Test")
+			defer os.Exit(1)
 		}
 
 	},
