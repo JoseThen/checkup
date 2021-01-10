@@ -22,7 +22,7 @@ var examCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		file, _ := cmd.Flags().GetString("file")
 		exitCode := 0
-		exam := utils.ReadYaml(file)
+		exam := utils.ReadExam(file)
 		var httpClient = &http.Client{
 			Timeout: time.Second * 10,
 		}

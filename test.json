@@ -1,7 +1,7 @@
 {
     "name": "Exam Name",
     "endpoint": "https://google.com",
-    "test": [
+    "tests": [
         {
             "code": 200,
             "paths": [
