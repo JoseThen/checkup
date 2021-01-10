@@ -2,9 +2,15 @@ package cmd
 
 import (
 	"fmt"
+	"net/http"
+	"time"
 
+	utils "github.com/JoseThen/checkup/utils"
 	"github.com/spf13/cobra"
 )
+
+// File ... Variable for File flag
+var File string
 
 // examCmd represents the exam command
 var examCmd = &cobra.Command{
@@ -12,20 +18,30 @@ var examCmd = &cobra.Command{
 	Short: "Run a checkup against a file.",
 	Long:  `Runs checkup against a file`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("exam called")
+		file, _ := cmd.Flags().GetString("file")
+		pass := true
+		exam := utils.ReadYaml(file)
+		var httpClient = &http.Client{
+			Timeout: time.Second * 10,
+		}
+		for _, test := range exam.Tests {
+			for _, path := range test.Paths {
+				checkup := utils.Checkup(httpClient, test.Code, exam.Endpoint+path)
+				if checkup == false {
+					pass = false
+				}
+			}
+		}
+		if pass {
+			fmt.Println("Good Test")
+		} else {
+			fmt.Println("Bad Test")
+		}
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(examCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// examCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// examCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	examCmd.Flags().StringVarP(&File, "file", "f", "", "File to run exam against")
+	examCmd.MarkFlagRequired("file")
 }

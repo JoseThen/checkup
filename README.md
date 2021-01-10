@@ -34,25 +34,25 @@ test:
 
 ``` json
 {
-    "name": "Exam Name",
-    "endpoint": "https://google.com",
-    "test": [
-        {
-            "code": 200,
-            "paths": [
-                "/farm",
-                "/something",
-                "/else",
-            ]
-        },
-        {
-            "code": 404,
-             "paths": [
-                "/this",
-                "/not",
-                "/found",
-            ]
-        }
-    ]
+  "name": "Exam Name",
+  "endpoint": "https://google.com",
+  "test": [
+    {
+      "code": 200,
+      "paths": [
+          "/farm",
+          "/something",
+          "/else"
+      ]
+    },
+    {
+      "code": 404,
+        "paths": [
+          "/this",
+          "/not",
+          "/found"
+      ]
+    }
+  ]
 }
 ```

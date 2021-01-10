@@ -1,0 +1,13 @@
+name: Example Test
+endpoint: https://duckduckgo.com
+tests:
+  - code: 200
+    paths:
+      - /farm
+      - /something
+      - /else
+  - code: 404
+    paths:
+      - /this
+      - /not
+      - /found
