@@ -6,11 +6,11 @@ CLI to run simple health checks against endpoints
 
 
 ``` bash
-checkup listen https://google.com
-checkup listen -c 200 https://google.com
-checkup listen --code 302 https://potatoe.com/farm
-checkup exam -f list.json https://potatoe.com
-checkup exam --file list.yml https://tomatoe.io
+checkup listen -e https://google.com # default code is 200
+checkup listen -c 200 -e https://google.com
+checkup listen --code 302 --endpoint https://potatoe.com/farm
+checkup exam -f list.json
+checkup exam --file list.yml
 ```
 
 ## Exam File Example :
@@ -19,7 +19,7 @@ checkup exam --file list.yml https://tomatoe.io
 ``` yaml
 name: Test Name
 endpoint: https://duckduckgo.com
-test:
+tests:
   - code: 200
     paths:
       - /farm
@@ -36,7 +36,7 @@ test:
 {
   "name": "Exam Name",
   "endpoint": "https://google.com",
-  "test": [
+  "tests": [
     {
       "code": 200,
       "paths": [
