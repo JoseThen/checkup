@@ -11,6 +11,7 @@ checkup listen -c 200 -e https://google.com
 checkup listen --code 302 --endpoint https://potatoe.com/farm
 checkup exam -f list.json
 checkup exam --file list.yml
+checkup listen -e https://google.com -u noodle -p soup
 ```
 
 ## Exam File Example :
