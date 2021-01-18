@@ -20,7 +20,9 @@ checkup listen -c 200 -e https://google.com
 checkup listen --code 302 --endpoint https://potatoe.com/farm
 checkup exam -f list.json
 checkup exam --file list.yml
-CU_USER=admin CU_PASS=pass go run main.go listen -e http://localhost:8080 -a # with basic auth
+# Basic Authentication with env vars
+# CU_USER=admin CU_PASS=pass
+checkup listen -e http://localhost:8080 -a
 ```
 
 ## Exam File Example :
