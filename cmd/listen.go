@@ -23,12 +23,23 @@ var listenCmd = &cobra.Command{
 	Short: "Ensure endpoint resolves with correct status code",
 	Long:  `Send a request to a given endpoint and assert that the status code matches your expected status code.`,
 	Run: func(cmd *cobra.Command, args []string) {
+		// Flag parsing
 		code, _ := cmd.Flags().GetInt("code")
+		auth, _ := cmd.Flags().GetBool("auth")
 		endpoint, _ := cmd.Flags().GetString("endpoint")
+		// Setting up http Client
 		var httpClient = &http.Client{
 			Timeout: time.Second * 10,
 		}
-		checkup := utils.Checkup(httpClient, code, endpoint)
+		// Setup check Request with above variables
+		checkRequest := &utils.CheckupRequest{
+			Client:   httpClient,
+			Code:     code,
+			Endpoint: endpoint,
+			Auth:     auth,
+		}
+		// checkup := utils.Checkup(httpClient, code, endpoint, auth)
+		checkup := utils.Checkup(*checkRequest)
 		w := tabwriter.NewWriter(os.Stdout, 1, 1, 1, ' ', 0)
 		fmt.Fprintf(w, "\n %s\t%s\t%s\t%s\t", "Endpoint", "Code", "Result", "Pass")
 		fmt.Fprintf(w, "\n %s\t%s\t%s\t%s\t", "--------", "----", "------", "----")

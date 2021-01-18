@@ -1,5 +1,5 @@
 # checkup
-CLI to run simple health checks against endpoints 
+CLI to run simple health checks against endpoints
 
 ---
 ## Example Usage :
@@ -11,7 +11,7 @@ checkup listen -c 200 -e https://google.com
 checkup listen --code 302 --endpoint https://potatoe.com/farm
 checkup exam -f list.json
 checkup exam --file list.yml
-checkup listen -e https://google.com -u noodle -p soup # with basic auth
+CU_USER=admin CU_PASS=pass go run main.go listen -e http://localhost:8080 -a # with basic auth
 ```
 
 ## Exam File Example :
