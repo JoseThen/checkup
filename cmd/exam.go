@@ -20,9 +20,12 @@ var examCmd = &cobra.Command{
 	Short: "Run a checkup against a file.",
 	Long:  `Runs checkup against a file`,
 	Run: func(cmd *cobra.Command, args []string) {
+		// Flag Parsing
 		file, _ := cmd.Flags().GetString("file")
-		exitCode := 0
+		auth, _ := cmd.Flags().GetBool("auth")
 		exam := utils.ReadExam(file)
+		exitCode := 0
+		// Setup http Client
 		var httpClient = &http.Client{
 			Timeout: time.Second * 10,
 		}
@@ -31,7 +34,14 @@ var examCmd = &cobra.Command{
 		fmt.Fprintf(w, "\n %s\t%s\t%s\t%s\t", "--------", "----", "------", "----")
 		for _, test := range exam.Tests {
 			for _, path := range test.Paths {
-				checkup := utils.Checkup(httpClient, test.Code, exam.Endpoint+path)
+				// Setup check Request with above variables
+				checkRequest := &utils.CheckupRequest{
+					Client:   httpClient,
+					Code:     test.Code,
+					Endpoint: exam.Endpoint + path,
+					Auth:     auth,
+				}
+				checkup := utils.Checkup(*checkRequest)
 				fmt.Fprintf(w, "\n %s\t%d\t%d\t%v\t", checkup.Endpoint, checkup.Code, checkup.Result, checkup.Pass)
 				if checkup.Pass == false {
 					exitCode = 1
