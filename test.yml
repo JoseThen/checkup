@@ -6,3 +6,7 @@ tests:
       - /farm
       - /something
       - /else
+      - /pie
+      - /apple
+      - /pear
+      - /banana

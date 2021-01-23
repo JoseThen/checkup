@@ -44,13 +44,17 @@ var examCmd = &cobra.Command{
 				checkup := utils.Checkup(*checkRequest)
 				fmt.Fprintf(w, "\n %s\t%d\t%d\t%v\t", checkup.Endpoint, checkup.Code, checkup.Result, checkup.Pass)
 				if checkup.Pass == false {
-					exitCode = 1
+					exitCode = 3
 				}
 			}
 		}
 		w.Flush()
 		fmt.Println()
-		defer os.Exit(exitCode)
+		if exitCode == 0 {
+			defer os.Exit(exitCode)
+		} else {
+			defer utils.CustomErrorOut("**exam failed**", exitCode)
+		}
 	},
 }
 

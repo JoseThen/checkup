@@ -49,7 +49,7 @@ var listenCmd = &cobra.Command{
 		if checkup.Pass {
 			defer os.Exit(0)
 		} else {
-			defer os.Exit(1)
+			defer utils.CustomErrorOut("\n**checkup failed**", 2)
 		}
 
 	},
