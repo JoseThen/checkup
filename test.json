@@ -3,12 +3,8 @@
     "endpoint": "https://google.com",
     "tests": [
         {
-            "code": 200,
-            "paths": [
-                "/farm",
-                "/something",
-                "/else"
-            ]
+            "code": 404,
+            "paths": ["/farm", "/something", "/else"]
         }
     ]
 }
