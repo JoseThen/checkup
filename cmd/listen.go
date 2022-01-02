@@ -2,10 +2,8 @@ package cmd
 
 import (
 	"fmt"
-	"net/http"
 	"os"
 	"text/tabwriter"
-	"time"
 
 	utils "github.com/JoseThen/checkup/utils"
 	"github.com/spf13/cobra"
@@ -27,10 +25,7 @@ var listenCmd = &cobra.Command{
 		code, _ := cmd.Flags().GetInt("code")
 		auth, _ := cmd.Flags().GetBool("auth")
 		endpoint, _ := cmd.Flags().GetString("endpoint")
-		// Setting up http Client
-		var httpClient = &http.Client{
-			Timeout: time.Second * 10,
-		}
+
 		// Setup check Request with above variables
 		checkRequest := &utils.CheckupRequest{
 			Client:   httpClient,
@@ -38,12 +33,12 @@ var listenCmd = &cobra.Command{
 			Endpoint: endpoint,
 			Auth:     auth,
 		}
-		// checkup := utils.Checkup(httpClient, code, endpoint, auth)
 		checkup := utils.Checkup(*checkRequest)
+		httpClient.CloseIdleConnections()
 		w := tabwriter.NewWriter(os.Stdout, 1, 1, 1, ' ', 0)
-		fmt.Fprintf(w, "\n %s\t%s\t%s\t%s\t", "Endpoint", "Code", "Result", "Pass")
-		fmt.Fprintf(w, "\n %s\t%s\t%s\t%s\t", "--------", "----", "------", "----")
-		fmt.Fprintf(w, "\n %s\t%d\t%d\t%v\t", checkup.Endpoint, checkup.Code, checkup.Result, checkup.Pass)
+		fmt.Fprintf(w, "\n %s\t%s\t%s\t%s\t%s\t", "Endpoint", "Code", "Result", "Latency", "Pass")
+		fmt.Fprintf(w, "\n %s\t%s\t%s\t%s\t%s\t", "--------", "----", "------", "-------", "----")
+		fmt.Fprintf(w, "\n %s\t%d\t%d\t%dms\t%v\t", checkup.Endpoint, checkup.Code, checkup.Result, checkup.Lantency.Milliseconds(), checkup.Pass)
 		w.Flush()
 		fmt.Println()
 		if checkup.Pass {
