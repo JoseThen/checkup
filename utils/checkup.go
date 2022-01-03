@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"net/http"
 	"os"
+	"time"
 )
 
 // CheckupRequest ... Struct holding all data needed for a checkup
@@ -19,6 +20,7 @@ type CheckupResults struct {
 	Endpoint string
 	Code     int
 	Result   int
+	Lantency time.Duration
 	Pass     bool
 }
 
@@ -37,16 +39,18 @@ func Checkup(healthForm CheckupRequest) CheckupResults {
 		healthForm.Client.CheckRedirect = addAuthOnRedirect
 	}
 
+	start := time.Now()
 	resp, err := healthForm.Client.Do(request)
 	if err != nil {
 		ErrorCheck(err)
 	}
+	end := time.Since(start)
 	defer resp.Body.Close()
-
 	results := CheckupResults{
 		Endpoint: healthForm.Endpoint,
 		Code:     healthForm.Code,
 		Result:   resp.StatusCode,
+		Lantency: end,
 		Pass:     resp.StatusCode == healthForm.Code,
 	}
 

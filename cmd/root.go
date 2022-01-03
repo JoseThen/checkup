@@ -2,7 +2,9 @@ package cmd
 
 import (
 	"fmt"
+	"net/http"
 	"os"
+	"time"
 
 	"github.com/spf13/cobra"
 
@@ -20,6 +22,11 @@ var rootCmd = &cobra.Command{
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	//	Run: func(cmd *cobra.Command, args []string) { },
+}
+
+// Setup http Client
+var httpClient = &http.Client{
+	Timeout: time.Second * 10,
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.

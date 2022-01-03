@@ -2,10 +2,8 @@ package cmd
 
 import (
 	"fmt"
-	"net/http"
 	"os"
 	"text/tabwriter"
-	"time"
 
 	utils "github.com/JoseThen/checkup/utils"
 	"github.com/spf13/cobra"
@@ -25,13 +23,10 @@ var examCmd = &cobra.Command{
 		auth, _ := cmd.Flags().GetBool("auth")
 		exam := utils.ReadExam(file)
 		exitCode := 0
-		// Setup http Client
-		var httpClient = &http.Client{
-			Timeout: time.Second * 10,
-		}
+
 		w := tabwriter.NewWriter(os.Stdout, 1, 1, 1, ' ', 0)
-		fmt.Fprintf(w, "\n %s\t%s\t%s\t%s\t", "Endpoint", "Code", "Result", "Pass")
-		fmt.Fprintf(w, "\n %s\t%s\t%s\t%s\t", "--------", "----", "------", "----")
+		fmt.Fprintf(w, "\n %s\t%s\t%s\t%s\t%s\t", "Endpoint", "Code", "Result", "Latency", "Pass")
+		fmt.Fprintf(w, "\n %s\t%s\t%s\t%s\t%s\t", "--------", "----", "------", "-------", "----")
 		for _, test := range exam.Tests {
 			for _, path := range test.Paths {
 				// Setup check Request with above variables
@@ -42,8 +37,9 @@ var examCmd = &cobra.Command{
 					Auth:     auth,
 				}
 				checkup := utils.Checkup(*checkRequest)
-				fmt.Fprintf(w, "\n %s\t%d\t%d\t%v\t", checkup.Endpoint, checkup.Code, checkup.Result, checkup.Pass)
-				if checkup.Pass == false {
+				httpClient.CloseIdleConnections()
+				fmt.Fprintf(w, "\n %s\t%d\t%d\t%dms\t%v\t", checkup.Endpoint, checkup.Code, checkup.Result, checkup.Lantency.Milliseconds(), checkup.Pass)
+				if !checkup.Pass {
 					exitCode = 3
 				}
 			}

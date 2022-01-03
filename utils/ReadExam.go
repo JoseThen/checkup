@@ -26,7 +26,7 @@ func ReadExam(file string) ExamFile {
 	examFile, err := ioutil.ReadFile(file)
 	ErrorCheck(err)
 	extension := filepath.Ext(strings.TrimSpace(file))
-	err = fmt.Errorf("Wrong Extension: %v", extension)
+	err = fmt.Errorf("wrong Extension: %v", extension)
 	if extension == ".yaml" || extension == ".yml" {
 		err = yaml.Unmarshal(examFile, &exam)
 	}
