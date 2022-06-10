@@ -1,13 +1,13 @@
 .PHONY: build run compile build-linux build-windows build-darwin test
 
-VERSION ?= 0.5.0
+VERSION ?= 0.6.0
 NAME ?= "checkup"
 
 test:
 	go test ./tests -v
 
 build:
-	go build -o release/$(NAME) main.go
+	go build -o build/$(NAME) main.go
 
 run:
 	go run main.go
