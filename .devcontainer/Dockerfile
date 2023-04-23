@@ -2,7 +2,7 @@
 # [Choice] Alpine version: 3.14, 3.13, 3.12, 3.11
 FROM mcr.microsoft.com/vscode/devcontainers/base:0-alpine-3.14
 
-COPY --from=golang:1.17-alpine /usr/local/go/ /usr/local/go/
+COPY --from=golang:1.20-alpine /usr/local/go/ /usr/local/go/
 
 ENV PATH="/usr/local/go/bin:${PATH}"
 
