@@ -3,11 +3,33 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"text/tabwriter"
+	"strconv"
 
 	utils "github.com/JoseThen/checkup/utils"
 	"github.com/spf13/cobra"
+
+	"github.com/charmbracelet/bubbles/table"
+	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/lipgloss"
 )
+
+var baseStyle = lipgloss.NewStyle().
+	// BorderStyle(lipgloss.NormalBorder()).
+	BorderForeground(lipgloss.Color("240"))
+
+type model struct {
+	table table.Model
+}
+
+func (m model) Init() tea.Cmd { return nil }
+
+func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	return m, tea.Quit
+}
+
+func (m model) View() string {
+	return baseStyle.Render(m.table.View()) + "\n"
+}
 
 // Code ...Variable for code flag
 var Code int
@@ -35,12 +57,55 @@ var listenCmd = &cobra.Command{
 		}
 		checkup := utils.Checkup(*checkRequest)
 		httpClient.CloseIdleConnections()
-		w := tabwriter.NewWriter(os.Stdout, 1, 1, 1, ' ', 0)
-		fmt.Fprintf(w, "\n %s\t%s\t%s\t%s\t%s\t", "Endpoint", "Code", "Result", "Latency", "Pass")
-		fmt.Fprintf(w, "\n %s\t%s\t%s\t%s\t%s\t", "--------", "----", "------", "-------", "----")
-		fmt.Fprintf(w, "\n %s\t%d\t%d\t%dms\t%v\t", checkup.Endpoint, checkup.Code, checkup.Result, checkup.Lantency.Milliseconds(), checkup.Pass)
-		w.Flush()
-		fmt.Println()
+
+		columns := []table.Column{
+			{Title: "Endpoint", Width: 50},
+			{Title: "Code", Width: 5},
+			{Title: "Result", Width: 10},
+			{Title: "Latency", Width: 10},
+			{Title: "Pass", Width: 5},
+		}
+
+		rows := []table.Row{
+			{
+				checkup.Endpoint,
+				strconv.Itoa(checkup.Code),
+				strconv.Itoa(checkup.Result),
+				strconv.FormatInt(checkup.Lantency.Milliseconds(), 10),
+				strconv.FormatBool(checkup.Pass)},
+		}
+
+		t := table.New(
+			table.WithColumns(columns),
+			table.WithRows(rows),
+			table.WithFocused(true),
+			table.WithHeight(7),
+		)
+
+		s := table.DefaultStyles()
+		s.Header = s.Header.
+			BorderStyle(lipgloss.NormalBorder()).
+			BorderForeground(lipgloss.Color("240")).
+			BorderBottom(true).
+			Bold(false)
+		s.Selected = s.Selected.
+			Foreground(lipgloss.Color("229")).
+			Background(lipgloss.Color("57")).
+			Bold(false)
+		t.SetStyles(s)
+
+		m := model{t}
+		if _, err := tea.NewProgram(m).Run(); err != nil {
+			fmt.Println("Error running program:", err)
+			os.Exit(1)
+		}
+
+		// w := tabwriter.NewWriter(os.Stdout, 1, 1, 1, ' ', 0)
+		// fmt.Fprintf(w, "\n %s\t%s\t%s\t%s\t%s\t", "Endpoint", "Code", "Result", "Latency", "Pass")
+		// fmt.Fprintf(w, "\n %s\t%s\t%s\t%s\t%s\t", "--------", "----", "------", "-------", "----")
+		// fmt.Fprintf(w, "\n %s\t%d\t%d\t%dms\t%v\t", checkup.Endpoint, checkup.Code, checkup.Result, checkup.Lantency.Milliseconds(), checkup.Pass)
+		// w.Flush()
+		// fmt.Println()
 		if checkup.Pass {
 			defer os.Exit(0)
 		} else {
