@@ -95,7 +95,7 @@ var listenCmd = &cobra.Command{
 		t.SetStyles(s)
 
 		m := model{t}
-		if _, err := tea.NewProgram(m).Run(); err != nil {
+		if err := tea.NewProgram(m).Start(); err != nil {
 			fmt.Println("Error running program:", err)
 			os.Exit(1)
 		}
@@ -109,7 +109,7 @@ var listenCmd = &cobra.Command{
 		if checkup.Pass {
 			defer os.Exit(0)
 		} else {
-			defer utils.CustomErrorOut("\n**checkup failed**", 2)
+			defer utils.CustomErrorOut("**checkup failed**", 2)
 		}
 
 	},
