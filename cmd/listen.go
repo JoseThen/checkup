@@ -3,10 +3,11 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"text/tabwriter"
 
 	utils "github.com/JoseThen/checkup/utils"
 	"github.com/spf13/cobra"
+
+	tea "github.com/charmbracelet/bubbletea"
 )
 
 // Code ...Variable for code flag
@@ -35,16 +36,21 @@ var listenCmd = &cobra.Command{
 		}
 		checkup := utils.Checkup(*checkRequest)
 		httpClient.CloseIdleConnections()
-		w := tabwriter.NewWriter(os.Stdout, 1, 1, 1, ' ', 0)
-		fmt.Fprintf(w, "\n %s\t%s\t%s\t%s\t%s\t", "Endpoint", "Code", "Result", "Latency", "Pass")
-		fmt.Fprintf(w, "\n %s\t%s\t%s\t%s\t%s\t", "--------", "----", "------", "-------", "----")
-		fmt.Fprintf(w, "\n %s\t%d\t%d\t%dms\t%v\t", checkup.Endpoint, checkup.Code, checkup.Result, checkup.Lantency.Milliseconds(), checkup.Pass)
-		w.Flush()
-		fmt.Println()
+
+		checkupList := []utils.CheckupResults{
+			checkup,
+		}
+
+		m := utils.TeaTable(checkupList)
+		if err := tea.NewProgram(m).Start(); err != nil {
+			fmt.Println("Error running program:", err)
+			os.Exit(1)
+		}
+
 		if checkup.Pass {
 			defer os.Exit(0)
 		} else {
-			defer utils.CustomErrorOut("\n**checkup failed**", 2)
+			defer utils.CustomErrorOut("**checkup failed**", 2)
 		}
 
 	},
