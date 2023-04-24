@@ -47,12 +47,6 @@ var listenCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		// w := tabwriter.NewWriter(os.Stdout, 1, 1, 1, ' ', 0)
-		// fmt.Fprintf(w, "\n %s\t%s\t%s\t%s\t%s\t", "Endpoint", "Code", "Result", "Latency", "Pass")
-		// fmt.Fprintf(w, "\n %s\t%s\t%s\t%s\t%s\t", "--------", "----", "------", "-------", "----")
-		// fmt.Fprintf(w, "\n %s\t%d\t%d\t%dms\t%v\t", checkup.Endpoint, checkup.Code, checkup.Result, checkup.Lantency.Milliseconds(), checkup.Pass)
-		// w.Flush()
-		// fmt.Println()
 		if checkup.Pass {
 			defer os.Exit(0)
 		} else {

@@ -3,9 +3,9 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"text/tabwriter"
 
 	utils "github.com/JoseThen/checkup/utils"
+	tea "github.com/charmbracelet/bubbletea"
 	"github.com/spf13/cobra"
 )
 
@@ -23,10 +23,8 @@ var examCmd = &cobra.Command{
 		auth, _ := cmd.Flags().GetBool("auth")
 		exam := utils.ReadExam(file)
 		exitCode := 0
+		checkupList := []utils.CheckupResults{}
 
-		w := tabwriter.NewWriter(os.Stdout, 1, 1, 1, ' ', 0)
-		fmt.Fprintf(w, "\n %s\t%s\t%s\t%s\t%s\t", "Endpoint", "Code", "Result", "Latency", "Pass")
-		fmt.Fprintf(w, "\n %s\t%s\t%s\t%s\t%s\t", "--------", "----", "------", "-------", "----")
 		for _, test := range exam.Tests {
 			for _, path := range test.Paths {
 				// Setup check Request with above variables
@@ -38,14 +36,18 @@ var examCmd = &cobra.Command{
 				}
 				checkup := utils.Checkup(*checkRequest)
 				httpClient.CloseIdleConnections()
-				fmt.Fprintf(w, "\n %s\t%d\t%d\t%dms\t%v\t", checkup.Endpoint, checkup.Code, checkup.Result, checkup.Lantency.Milliseconds(), checkup.Pass)
+				checkupList = append(checkupList, checkup)
 				if !checkup.Pass {
 					exitCode = 3
 				}
 			}
 		}
-		w.Flush()
-		fmt.Println()
+
+		m := utils.TeaTable(checkupList)
+		if err := tea.NewProgram(m).Start(); err != nil {
+			fmt.Println("Error running program:", err)
+			os.Exit(1)
+		}
 		if exitCode == 0 {
 			defer os.Exit(exitCode)
 		} else {
