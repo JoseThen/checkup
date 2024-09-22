@@ -61,7 +61,12 @@ func TeaTable(checkups []CheckupResults) model {
 		BorderForeground(lipgloss.Color("240")).
 		BorderBottom(true).
 		Bold(true)
+	// We setup selected styles because it's used by default
 	s.Selected = s.Selected.
+		Foreground(lipgloss.Color("fff")).
+		// Background(lipgloss.Color("0")).
+		Bold(false)
+	s.Cell = s.Cell.
 		Foreground(lipgloss.Color("fff")).
 		// Background(lipgloss.Color("0")).
 		Bold(false)

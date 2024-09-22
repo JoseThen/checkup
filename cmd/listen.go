@@ -42,6 +42,7 @@ var listenCmd = &cobra.Command{
 		}
 
 		m := utils.TeaTable(checkupList)
+		fmt.Println(m)
 		program := tea.NewProgram(m)
 		if _, err := program.Run(); err != nil {
 			fmt.Println("Error running program:", err)
