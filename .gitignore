@@ -18,3 +18,5 @@ bin/
 checkup
 release/
 build/
+# this one was just annoying, vscode kept trying to commit
+**/.vscode/

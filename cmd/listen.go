@@ -3,7 +3,6 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"text/tabwriter"
 
 	utils "github.com/JoseThen/checkup/utils"
 	"github.com/spf13/cobra"
@@ -35,16 +34,18 @@ var listenCmd = &cobra.Command{
 		}
 		checkup := utils.Checkup(*checkRequest)
 		httpClient.CloseIdleConnections()
-		w := tabwriter.NewWriter(os.Stdout, 1, 1, 1, ' ', 0)
-		fmt.Fprintf(w, "\n %s\t%s\t%s\t%s\t%s\t", "Endpoint", "Code", "Result", "Latency", "Pass")
-		fmt.Fprintf(w, "\n %s\t%s\t%s\t%s\t%s\t", "--------", "----", "------", "-------", "----")
-		fmt.Fprintf(w, "\n %s\t%d\t%d\t%dms\t%v\t", checkup.Endpoint, checkup.Code, checkup.Result, checkup.Lantency.Milliseconds(), checkup.Pass)
-		w.Flush()
-		fmt.Println()
+
+		checkupList := []utils.CheckupResults{
+			checkup,
+		}
+
+		table := utils.Show(checkupList)
+		fmt.Println(table)
+
 		if checkup.Pass {
 			defer os.Exit(0)
 		} else {
-			defer utils.CustomErrorOut("\n**checkup failed**", 2)
+			defer utils.CustomErrorOut("**checkup failed**", 2)
 		}
 
 	},
