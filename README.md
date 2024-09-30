@@ -13,16 +13,24 @@
 ---
 ## Example Usage :
 
+Note that we introduced styling from https://github.com/charmbracelet/lipgloss
 
-``` bash
-checkup listen -e https://google.com # default code is 200
-checkup listen -c 200 -e https://google.com
-checkup listen --code 302 --endpoint https://potatoe.com/farm
-checkup exam -f list.json
-checkup exam --file list.yml
+##### Default usage with `listen`
+
+![Use with listen command](./Images/default-use.png)
+![Use with exam command](./Images/default-use-fail.png)
+![Use with exam command](./Images/default-use-error.png)
+
+##### Passing a File with `exam`
+
+![Use with exam command](./Images/exam.png)
+
+##### Local usage with environment variables
+
+```bash
 # Basic Authentication with env vars
 # CU_USER=admin CU_PASS=pass
-checkup listen -e http://localhost:8080 -a
+$ checkup listen -e http://localhost:8080 -a
 ```
 
 ## Exam File Example :
