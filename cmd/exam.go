@@ -5,7 +5,6 @@ import (
 	"os"
 
 	utils "github.com/JoseThen/checkup/utils"
-	tea "github.com/charmbracelet/bubbletea"
 	"github.com/spf13/cobra"
 )
 
@@ -43,12 +42,8 @@ var examCmd = &cobra.Command{
 			}
 		}
 
-		m := utils.TeaTable(checkupList)
-		program := tea.NewProgram(m)
-		if _, err := program.Run(); err != nil {
-			fmt.Println("Error running program:", err)
-			os.Exit(1)
-		}
+		table := utils.Show(checkupList)
+		fmt.Println(table)
 		if exitCode == 0 {
 			defer os.Exit(exitCode)
 		} else {

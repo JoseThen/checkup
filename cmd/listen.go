@@ -6,8 +6,6 @@ import (
 
 	utils "github.com/JoseThen/checkup/utils"
 	"github.com/spf13/cobra"
-
-	tea "github.com/charmbracelet/bubbletea"
 )
 
 // Code ...Variable for code flag
@@ -41,13 +39,8 @@ var listenCmd = &cobra.Command{
 			checkup,
 		}
 
-		m := utils.TeaTable(checkupList)
-		fmt.Println(m)
-		program := tea.NewProgram(m)
-		if _, err := program.Run(); err != nil {
-			fmt.Println("Error running program:", err)
-			os.Exit(1)
-		}
+		table := utils.Show(checkupList)
+		fmt.Println(table)
 
 		if checkup.Pass {
 			defer os.Exit(0)
