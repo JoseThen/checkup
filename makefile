@@ -1,6 +1,6 @@
 .PHONY: build run compile build-linux build-windows build-darwin test
 
-VERSION ?= 0.6.0
+VERSION ?= 0.7.0
 NAME ?= "checkup"
 
 test:
