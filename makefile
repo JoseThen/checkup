@@ -1,6 +1,6 @@
 .PHONY: build run compile build-linux build-windows build-darwin test
 
-VERSION ?= 0.7.0
+VERSION ?= 0.8.0
 NAME ?= "checkup"
 
 test:
@@ -15,8 +15,7 @@ run:
 build-darwin:
 	echo "Compiling for Darwin"
 	GOOS=darwin GOARCH=amd64 go build -o release/$(NAME)-v${VERSION}-darwin-amd64 main.go
-	# GOOS=darwin GOARCH=arm go build -v -o release/$(NAME)-v${VERSION}-darwin-arm main.go
-	# GOOS=darwin GOARCH=arm64 go build -o release/$(NAME)-v${VERSION}-darwin-arm64 main.go
+	GOOS=darwin GOARCH=arm64 go build -o release/$(NAME)-v${VERSION}-darwin-arm64 main.go
 
 build-windows:
 	echo "Compiling for Windows"
