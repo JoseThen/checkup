@@ -3,7 +3,7 @@ package utils
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"path/filepath"
 	"strings"
 
@@ -23,7 +23,7 @@ type ExamFile struct {
 // ReadExam ... Help read a given file and set to a struct
 func ReadExam(file string) ExamFile {
 	var exam ExamFile
-	examFile, err := ioutil.ReadFile(file)
+	examFile, err := os.ReadFile(file)
 	ErrorCheck(err)
 	extension := filepath.Ext(strings.TrimSpace(file))
 	err = fmt.Errorf("wrong Extension: %v", extension)

@@ -20,7 +20,7 @@ type CheckupResults struct {
 	Endpoint string
 	Code     int
 	Result   int
-	Lantency time.Duration
+	Latency  time.Duration
 	Pass     bool
 }
 
@@ -50,7 +50,7 @@ func Checkup(healthForm CheckupRequest) CheckupResults {
 		Endpoint: healthForm.Endpoint,
 		Code:     healthForm.Code,
 		Result:   resp.StatusCode,
-		Lantency: end,
+		Latency:  end,
 		Pass:     resp.StatusCode == healthForm.Code,
 	}
 

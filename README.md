@@ -7,7 +7,7 @@
 </p>
 
 <p align="center">
-  <img align="center" width="160px" src="./assets/gopher.png">
+  <img align="center" width="160px" src="./Images/gopher.png">
 </p>
 
 ---

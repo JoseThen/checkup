@@ -52,7 +52,7 @@ func Show(checkups []CheckupResults) *table.Table {
 			checkups[count].Endpoint,
 			strconv.Itoa(checkups[count].Code),
 			strconv.Itoa(checkups[count].Result),
-			strconv.FormatInt(checkups[count].Lantency.Milliseconds(), 10),
+			strconv.FormatInt(checkups[count].Latency.Milliseconds(), 10),
 			strconv.FormatBool(checkups[count].Pass),
 		)
 	}
